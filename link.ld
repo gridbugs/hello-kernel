@@ -1,24 +1,28 @@
-mmio  = 0xfffffffff8000000;
-fb    = 0xfffffffffc000000;
-
-PHDRS {
-  boot PT_LOAD;
-}
+mmio = 0xfffffffff8000000;
+fb = 0xfffffffffc000000;
+kernel_base = 0xffffffffffe00000;
 
 SECTIONS {
-    . = 0xffffffffffe00000;
-    bootboot    = .; . += 4096;
-    environment = .; . += 4096;
-    .text : {
-        KEEP(*(.text.boot)) *(.text .text.*)   /* code */
-        *(.rodata .rodata.*)                   /* data */
-        *(.data .data.*)
-    } :boot
-    .bss (NOLOAD) : {                          /* bss */
-        . = ALIGN(16);
-        *(.bss .bss.*)
-        *(COMMON)
-    } :boot
+    . = kernel_base;
 
-    /DISCARD/ : { *(.eh_frame) *(.comment) }
+    bootboot = .;
+    . += 0x1000;
+
+    environment = .;
+    . += 0x1000;
+
+    .text : {
+        *(.text)
+        *(.rodata)
+        *(.data)
+    }
+
+    .bss (NOLOAD) : ALIGN(0x1000) {
+        *(.bss)
+    }
+
+    /DISCARD/ : {
+        *(.eh_frame)
+        *(.comment)
+    }
 }
