@@ -9,7 +9,7 @@ int foo;
 int bar = 5;
 
 void _start() {
-    printf("Hello, World! %d %x %s\n");
+    printf("Hello, World!\n");
     printf("Installing GDT\n");
     install_gdt();
     printf("Done!\n");
