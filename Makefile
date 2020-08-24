@@ -16,7 +16,7 @@ clean:
 	rm -f *.o *.img *.elf
 
 run: kernel.img
-	$(QEMU) -drive file=$^,format=raw -serial stdio -display none
+	$(QEMU) -drive file=$^,format=raw -serial stdio -display none -no-shutdown -no-reboot -d int
 
 run-graphical: kernel.img
 	$(QEMU) -drive file=$^,format=raw -serial stdio
@@ -27,13 +27,15 @@ run-debug: kernel.img
 printf.o: printf.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-kernel.elf: kernel.c putc.asm gdt.asm user_trampoline.asm switch_to_user_mode.asm link.ld printf.o user.o
+kernel.elf: kernel.c gdt.c exceptions.c putc.asm gdt.asm user_trampoline.asm switch_to_user_mode.asm link.ld printf.o user.o
 	$(CC) $(CFLAGS) -mno-red-zone -c kernel.c -o kernel.o
+	$(CC) $(CFLAGS) -mno-red-zone -c exceptions.c -o exceptions.o
+	$(CC) $(CFLAGS) -mno-red-zone -c gdt.c -o gdtc.o
 	$(NASM) -g -f elf64 gdt.asm -o gdt.o
 	$(NASM) -g -f elf64 putc.asm -o putc.o
 	$(NASM) -g -f elf64 user_trampoline.asm -o user_trampoline.o
 	$(NASM) -g -f elf64 switch_to_user_mode.asm -o switch_to_user_mode.o
-	$(LD) -nostdlib --script link.ld kernel.o gdt.o putc.o printf.o switch_to_user_mode.o user_trampoline.o user.o -o $@
+	$(LD) -nostdlib --script link.ld kernel.o exceptions.o gdtc.o gdt.o putc.o printf.o switch_to_user_mode.o user_trampoline.o user.o -o $@
 	$(STRIP) -s \
 		--keep-symbol=mmio \
 		--keep-symbol=fb \
