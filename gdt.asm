@@ -53,7 +53,7 @@ load_idt:
     ret
 
 push_hi:
-    o64 pop rdi
+    pop rdi
     push 0x0123ABCD
     push rdi
     ret

@@ -63,6 +63,7 @@ void setup_gdt() {
     gdt_table.tss_low.base31_24 = (tss_base >> 24) & 0xff;
     gdt_table.tss_low.limit15_0 = sizeof(tss);
     gdt_table.tss_high.limit15_0 = (tss_base >> 32) & 0xffff;
+    gdt_table.tss_high.base15_0 = (tss_base >> 48) & 0xffff;
 
     tss.rsp0 = (uint64_t)(interrupt_stack + 0x1000);
     tss.rsp1 = (uint64_t)(interrupt_stack + 0x1000);

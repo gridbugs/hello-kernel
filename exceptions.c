@@ -32,7 +32,7 @@ static struct idt_descr make_idt_decr(void (*fn)()) {
         .off_16_31 = (uint16_t)(((uint64_t)fn >> 16) & 0xFFFF),
         .off_32_63 = (uint32_t)(((uint64_t)fn >> 32) & 0xFFFFFFFF),
         .code_segment_selector = 8,
-        .stack_offset = 0,
+        .stack_offset = 1,
         .options = 0x8E,
         .zero = 0,
     };

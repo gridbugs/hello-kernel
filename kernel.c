@@ -39,5 +39,7 @@ void _start() {
 
 void _user() {
     push_hi();
+    int* bad = (int*)0x42;
+    *bad = 42;
     while(1);
 }
