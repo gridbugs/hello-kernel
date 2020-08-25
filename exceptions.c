@@ -11,7 +11,7 @@ struct idt_descr {
     uint16_t off_16_31;
     uint32_t off_32_63;
     uint32_t zero;
-}  __attribute__((packed)) idt[NUM_EXCEPTIONS] = { 0 };
+}  __attribute__((packed)) idt[NUM_EXCEPTIONS] = { { 0 } };
 
 const struct {
     uint16_t limit;
