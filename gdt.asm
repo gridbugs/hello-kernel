@@ -2,6 +2,7 @@ global install_gdt
 global enable_sce
 global enable_star
 global load_idt
+global push_hi
 
 extern idt_addr
 
@@ -49,4 +50,10 @@ enable_star:
 
 load_idt:
     lidt [idt_addr]
+    ret
+
+push_hi:
+    o64 pop rdi
+    push 0x0123ABCD
+    push rdi
     ret

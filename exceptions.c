@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "printf.h"
 
-#define NUM_EXCEPTIONS 100
+#define NUM_EXCEPTIONS 256
 
 struct idt_descr {
     uint16_t off_0_15;
@@ -17,7 +17,7 @@ const struct {
     uint16_t limit;
     void* address;
 } __attribute__((packed)) idt_addr = {
-    .limit = sizeof(idt) - 1,
+    .limit = (uint16_t)(sizeof(idt) - 1),
     .address = idt,
 };
 

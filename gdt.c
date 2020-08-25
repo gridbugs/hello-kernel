@@ -42,6 +42,9 @@ struct table_ptr {
     uint64_t base;
 };
 
+__attribute__((aligned(4096)))
+uint8_t interrupt_stack[0x1000];
+
 #pragma pack ()
 
 
@@ -52,8 +55,6 @@ void memzero(void * s, uint64_t n) {
     for (int i = 0; i < n; i++) ((uint8_t*)s)[i] = 0;
 }
 
-uint8_t interrupt_stack[0x1000];
-
 void setup_gdt() {
     memzero((void*)&tss, sizeof(tss));
     uint64_t tss_base = ((uint64_t)&tss);
@@ -62,6 +63,11 @@ void setup_gdt() {
     gdt_table.tss_low.base31_24 = (tss_base >> 24) & 0xff;
     gdt_table.tss_low.limit15_0 = sizeof(tss);
     gdt_table.tss_high.limit15_0 = (tss_base >> 32) & 0xffff;
+
+    tss.rsp0 = (uint64_t)(interrupt_stack + 0x1000);
+    tss.rsp1 = (uint64_t)(interrupt_stack + 0x1000);
+    tss.rsp2 = (uint64_t)(interrupt_stack + 0x1000);
+    tss.ist1 = (uint64_t)(interrupt_stack + 0x1000);
 
     struct table_ptr gdt_ptr = { sizeof(gdt_table)-1, (uint64_t)&gdt_table };
     install_gdt(&gdt_ptr);
