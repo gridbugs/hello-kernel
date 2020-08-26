@@ -13,8 +13,19 @@ int bar = 5;
 void push_hi();
 void _user();
 
+extern void *bootboot;
+extern unsigned char *environment;
+unsigned char *environment_wat = (unsigned char*)0xffffffffffe01000;
+
 void _start() {
     printf("Hello, World!\n");
+    printf("aaa %p\n", bootboot);
+    printf("hmm %p\n", environment_wat);
+    for (unsigned char* c = environment_wat; *c; c++) {
+        printf("%p\n", c);
+        printf("%x\n", *c);
+    }
+    printf("Environment:\n\n%s\n\n", environment_wat);
     printf("Installing GDT\n");
     setup_gdt();
     printf("Done!\n");
